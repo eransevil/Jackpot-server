@@ -6,7 +6,7 @@ const {
 } = require("./game.controller");
 const router = express.Router();
 
-router.get("/start", startGameController);
+router.post("/start", startGameController);
 router.post("/spinSlot", spinSlotController);
 router.post("/cashOut", cashOutController);
 
