@@ -27,29 +27,33 @@ const spinSlot = (sessionId) => {
   }
 
   credits -= 1;
-  sessions[sessionId].credits = credits;
-  let spinResult = _createSpin();
+  const firstSpinResult = _createSpin();
   let winAmount = 0;
 
-  if (_isUserWon(spinResult)) {
-    winAmount = REWARDS[spinResult[0]];
-    credits += winAmount;
+  if (_isUserWon(firstSpinResult)) {
+    winAmount = REWARDS[firstSpinResult[0]];
   }
+
+  let finalSpinResult = firstSpinResult;
+
   // re-spin logic
-  if (credits - winAmount >= 40) {
+  if (credits >= 40) {
     const reSpinProbability = credits < 60 ? 0.3 : 0.6;
     if (Math.random() < reSpinProbability && winAmount > 0) {
-      const secondRoundResult = _createSpin();
-      if (!_isUserWon(secondRoundResult)) {
-        spinResult = secondRoundResult;
-        credits -= winAmount;
+      const secondSpinResult = _createSpin();
+      finalSpinResult = secondSpinResult; // always update to second spin result
+      if (_isUserWon(secondSpinResult)) {
+        winAmount = REWARDS[secondSpinResult[0]];
+      } else {
+        winAmount = 0; // no win on the second spin
       }
     }
   }
 
+  credits += winAmount;
   sessions[sessionId].credits = credits;
   _saveSessionsToFile();
-  return { spinResult, credits };
+  return { spinResult: finalSpinResult, credits };
 };
 
 const cashOut = (sessionId) => {
