@@ -37,9 +37,9 @@ const spinSlot = (sessionId) => {
   let finalSpinResult = firstSpinResult;
 
   // re-spin logic
-  if (credits >= 40) {
+  if (credits >= 40 && winAmount > 0) {
     const reSpinProbability = credits < 60 ? 0.3 : 0.6;
-    if (Math.random() < reSpinProbability && winAmount > 0) {
+    if (Math.random() < reSpinProbability) {
       const secondSpinResult = _createSpin();
       finalSpinResult = secondSpinResult; // always update to second spin result
       if (_isUserWon(secondSpinResult)) {
